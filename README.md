@@ -1,2 +1,1 @@
-# BWINF42-2
-BWINF42-2
+Bundeswettbewerb für Informatik 42. Runde 2.
