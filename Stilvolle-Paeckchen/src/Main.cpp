@@ -5,7 +5,8 @@
 #include <vector>
 
 #include "Solution.h"
-//E:\dev\BWINF42-2\Stilvolle-Paeckchen\res\paeckchen1.txt
+// E:\dev\BWINF42-2\Stilvolle-Paeckchen\res\paeckchen1.txt
+// E:\dev\BWINF42-2\Stilvolle-Paeckchen\res\a.txt
 
 i32 main(i32 argc, char* argv[]) {
     std::setlocale(LC_ALL, "de");
@@ -31,7 +32,7 @@ i32 main(i32 argc, char* argv[]) {
 
     if (!file.good()) {
         file.close();
-        std::cout << "Datei konnte nicht gelesen werden!" << std::endl;
+        std::cout << "Die Datei konnte nicht gelesen werden!" << std::endl;
         return 1;
     }
 
@@ -39,13 +40,12 @@ i32 main(i32 argc, char* argv[]) {
     std::string line;
     std::stringstream stream;
 
-    u32 sortenAnzahl = 0, stillAnzahl = 0;
+    u32 s = 0, r = 0;
     if (std::getline(file, line)) {
         stream.clear();
         stream << line;
 
-        stream >> sortenAnzahl;
-        stream >> stillAnzahl;
+        stream >> s >> r;
     }
 
     std::vector<Kombination> kombinationen;
@@ -54,8 +54,7 @@ i32 main(i32 argc, char* argv[]) {
         stream << line;
 
         Kombination k;
-        stream >> k.x;
-        stream >> k.y;
+        stream >> k.x >> k.y;
         kombinationen.push_back(k);
     }
 
@@ -65,24 +64,24 @@ i32 main(i32 argc, char* argv[]) {
         stream << line;
 
         Sorte s;
-        stream >> s.i;
-        stream >> s.j;
-        stream >> s.n;
+        stream >> s.i >> s.j >> s.n;
         sorten.push_back(s);
     }
+
     file.close();
 
     // Solve
-    if (sortenAnzahl == 0 || stillAnzahl == 0 || kombinationen.size() == 0 || sorten.size() == 0) {
-        std::cout << "Datei ist fehlerhaft oder Kombinationen/Sorten sind falsch angegeben worden." << std::endl;
+    if (s == 0 || r == 0 || kombinationen.size() == 0 || sorten.size() == 0) {
+        std::cout << "Konnte Daten nicht laden. Die Datei könnte Fehler enthalten." << std::endl;
         return 1;
     }
 
-    std::vector<Packet> packete = Solve(sortenAnzahl, stillAnzahl, kombinationen, sorten);
+    std::vector<Packet> packete = Solve(s, r, kombinationen, sorten);
 
     // Output
-    std::cout << "Sorten Anzahl: " << sortenAnzahl << std::endl;
-    std::cout << "Still Anzahl:  "  << stillAnzahl  << std::endl;
+    std::cout << std::endl;
+    std::cout << "Sorten Anzahl: " << s << std::endl;
+    std::cout << "Still Anzahl:  " << r << std::endl;
 
     std::cout << std::endl << "Kombinationen: " << std::endl;
     for (const Kombination& k : kombinationen) {
