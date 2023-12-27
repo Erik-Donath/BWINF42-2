@@ -36,7 +36,7 @@ i32 main(i32 argc, char* argv[]) {
         return 1;
     }
 
-    // Read file
+    // Daten werden, wenn möglich, aus der Datei gelesen
     std::string line;
     std::stringstream stream;
 
@@ -70,15 +70,15 @@ i32 main(i32 argc, char* argv[]) {
 
     file.close();
 
-    // Solve
     if (s == 0 || r == 0 || kombinationen.size() == 0 || sorten.size() == 0) {
         std::cout << "Konnte Daten nicht laden. Die Datei könnte Fehler enthalten." << std::endl;
         return 1;
     }
-
+    
+    // Löst die Aufgabe. Siehe Solution.cpp bzw. Solution.h
     std::vector<Packet> packete = Solve(s, r, kombinationen, sorten);
 
-    // Output
+    // Gibt die Informationen auf der Konsole wieder
     std::cout << std::endl;
     std::cout << "Sorten Anzahl: " << s << std::endl;
     std::cout << "Still Anzahl:  " << r << std::endl;

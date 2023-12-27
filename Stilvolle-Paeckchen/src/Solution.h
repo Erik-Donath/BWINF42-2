@@ -26,4 +26,4 @@ struct Packet {
     Packet(Sorte a, Sorte b, Sorte c) : a(a), b(b), c(c) { }
 };
 
-std::vector<Packet> Solve(u32 sortenAnzahl, u32 stillAnzahl, std::vector<Kombination> kombinationen, std::vector<Sorte> sorten);
+const std::vector<Packet>& Solve(u32 sortenAnzahl, u32 stillAnzahl, const std::vector<Kombination>& kombinationen, const std::vector<Sorte>& sorten);

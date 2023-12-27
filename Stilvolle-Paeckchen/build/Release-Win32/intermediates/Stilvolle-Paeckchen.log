@@ -1,7 +1,9 @@
 ﻿  Main.cpp
+  Solution.cpp
   Generating code
-  264 of 342 functions (77.2%) were compiled, the rest were copied from previous compilation.
-    148 functions were new in current compilation
-    23 functions had inline decision re-evaluated but remain unchanged
+E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Solution.cpp(27): warning C4172: returning address of local variable or temporary: packete
+  488 of 720 functions (67.8%) were compiled, the rest were copied from previous compilation.
+    396 functions were new in current compilation
+    34 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Stilvolle-Paeckchen.vcxproj -> E:\dev\BWINF42-2\Stilvolle-Paeckchen\build\Release-Win32\Stilvolle-Paeckchen.exe
