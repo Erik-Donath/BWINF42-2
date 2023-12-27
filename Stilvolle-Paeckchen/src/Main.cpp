@@ -60,7 +60,7 @@ i32 main(i32 argc, char* argv[]) {
     }
 
     std::vector<Sorte> sorten;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line) && !line.empty()) {
         stream.clear();
         stream << line;
 
@@ -73,7 +73,7 @@ i32 main(i32 argc, char* argv[]) {
     file.close();
 
     // Solve
-    if (kombinationen.size() == 0 || sorten.size() == 0) {
+    if (sortenAnzahl == 0 || stillAnzahl == 0 || kombinationen.size() == 0 || sorten.size() == 0) {
         std::cout << "Datei ist fehlerhaft oder Kombinationen/Sorten sind falsch angegeben worden." << std::endl;
         return 1;
     }
@@ -82,16 +82,26 @@ i32 main(i32 argc, char* argv[]) {
 
     // Output
     std::cout << "Sorten Anzahl: " << sortenAnzahl << std::endl;
-    std::cout << "Still Anzahl: "  << stillAnzahl  << std::endl;
+    std::cout << "Still Anzahl:  "  << stillAnzahl  << std::endl;
 
-    std::cout << "Kombinationen: " << std::endl;
-    for (Kombination k : kombinationen) {
+    std::cout << std::endl << "Kombinationen: " << std::endl;
+    for (const Kombination& k : kombinationen) {
         std::cout << "  " << k.x << " <> " << k.y << std::endl;
     }
 
-    std::cout << "Sorten: " << std::endl;
-    for (Sorte s : sorten) {
+    std::cout << std::endl << "Sorten: " << std::endl;
+    for (const Sorte& s : sorten) {
         std::cout << "  " << s.i << " + " << s.j << " => " << s.n << std::endl;
+    }
+
+    std::cout << std::endl << "Packete: " << std::endl;
+    for (const Packet& p : packete) {
+        std::cout << "  "
+                  << "("     << p.a.i << " + " << p.a.j
+                  << ") + (" << p.b.i << " + " << p.b.j
+                  << ") + (" << p.c.i << " + " << p.c.j
+                  << ")"
+                  << std::endl;
     }
 
     return 0;
