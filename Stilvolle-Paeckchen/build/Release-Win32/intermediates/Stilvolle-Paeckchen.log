@@ -1,8 +1,7 @@
 ﻿  Main.cpp
-  Solution.cpp
   Generating code
-  86 of 171 functions (50.3%) were compiled, the rest were copied from previous compilation.
-    9 functions were new in current compilation
-    15 functions had inline decision re-evaluated but remain unchanged
+  264 of 342 functions (77.2%) were compiled, the rest were copied from previous compilation.
+    148 functions were new in current compilation
+    23 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Stilvolle-Paeckchen.vcxproj -> E:\dev\BWINF42-2\Stilvolle-Paeckchen\build\Release-Win32\Stilvolle-Paeckchen.exe
