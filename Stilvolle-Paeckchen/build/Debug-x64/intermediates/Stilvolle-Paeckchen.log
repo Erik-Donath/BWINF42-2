@@ -1,6 +1,4 @@
 ﻿  Main.cpp
-E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Main.cpp(30,25): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Main.cpp(37,29): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Main.cpp(48,34): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
-E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Main.cpp(49,35): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  Solution.cpp
+  Generating Code...
   Stilvolle-Paeckchen.vcxproj -> E:\dev\BWINF42-2\Stilvolle-Paeckchen\build\Debug-x64\Stilvolle-Paeckchen.exe
