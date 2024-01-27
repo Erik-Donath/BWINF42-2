@@ -1,48 +1,103 @@
 #include <vector>
-#include <unordered_map>
+#include "Solution.h"
 
 #include <iostream>
 
-#include "Solution.h"
+template<class Container, class Object>
+inline bool contains(Container container, const Object& value) {
+	return !container.empty() && std::find(container.begin(), container.end(), value) != container.end();
+}
 
-void debugSolution(const std::unordered_map<u32, std::vector<Sorte>>& smap, const std::unordered_map<u32, std::vector<u32>>& kmap);
-
-// Muss implementiert werden!
-const std::vector<Packet>& Solve(const u32 sortenAnzahl, const u32 stillAnzahl, const std::vector<Kombination>& kombinationen, const std::vector<Sorte>& sorten) {
+void debugSolution(const Input& input, const std::vector<Thing>* smap, const std::vector<u32>* kmap, const std::vector<Packet>& packets);
+const Output& Solve(const Input& input) {
 	// Sortiert die Sorten in eine Map, so das man die Sorten anhand der Stille einfacher ansprechen kann.
-	std::unordered_map<u32, std::vector<Sorte>> smap;
-	for (Sorte s : sorten) {
-		smap[s.j].push_back(s);
+	std::vector<Thing>* smap = new std::vector<Thing>[input.r];
+	for (Thing thing : input.things) {
+		thing.j -= 1, thing.i -= 1;
+		smap[thing.j].push_back(thing);
 	}
 
 	// Erstellt eine Map, die für ein Still anzeigt, mit welchen anderen Stillen er kombienert werden kann.
-	std::unordered_map<u32, std::vector<u32>> kmap;
-	for (Kombination k : kombinationen) {
-		kmap[k.x].push_back(k.y);
-		kmap[k.y].push_back(k.x);
+	std::vector<u32>* kmap = new std::vector<u32>[input.r];
+	for (u32 i = 0; i < input.r; i++)
+		kmap[i].push_back(i);
+	for (CPair pair : input.combinations) {
+		kmap[pair.x - 1].push_back(pair.y - 1);
+		kmap[pair.y - 1].push_back(pair.x - 1);
 	}
 
-	debugSolution(smap, kmap);
-	std::vector<Packet> packete;
-	return packete;
+	std::vector<Packet> packets;
+	for (u32 a = 0; a < input.r; a++) {
+	for (u32 b : kmap[a]) { // Alle Combis von a werden durchgegangen. Das erspart unnötiges checken.
+	for (u32 c : kmap[b]) {
+		if (contains(kmap[a], c)) { // c muss auch mit a kompatible sein!
+			for (Thing d : smap[a]) {
+			for (Thing e : smap[b]) {
+			for (Thing f : smap[c]) {
+				Packet p(Thing(d, 0), Thing(e, 0), Thing(f, 0));
+				if (!contains(packets, p)) {
+					packets.push_back(p);
+				}
+			}}}
+		}
+	}}}
+	
+	for (Thing t : input.things) {
+		t.i -= 1, t.j -= 1;
+		std::vector<Packet> k;
+		for (const Packet& p : packets) {
+			if (p.hasThing(t)) {
+				k.push_back(p);
+			}
+		}
+		std::cout << "For Thing (" << (t.j + 1) << ' ' << (t.i + 1) << "):" << std::endl;
+		if (k.empty()) std::cout << "  Empty" << std::endl;
+		for (const Packet& p : k) {
+			std::cout << "  ("
+					  << (p.a.j + 1) << ' ' << (p.a.i + 1) << ' ' << p.a.n << ") + ("
+					  << (p.b.j + 1) << ' ' << (p.b.i + 1) << ' ' << p.a.n << ") + ("
+					  << (p.c.j + 1) << ' ' << (p.c.i + 1) << ' ' << p.a.n << ')'
+					  << std::endl;
+		}
+
+	}
+
+	debugSolution(input, smap, kmap, packets);
+
+	delete[] smap;
+	delete[] kmap;
+
+	return Output(packets);
 }
 
-void debugSolution(const std::unordered_map<u32, std::vector<Sorte>>& smap, const std::unordered_map<u32, std::vector<u32>>& kmap) {
-	std::cout << "Smap: " << std::endl;
-	for (auto i : smap) {
-		std::cout << i.first << " => ";
+//#include <iostream>
+#include <sstream>
+void debugSolution(const Input& input, const std::vector<Thing>* smap, const std::vector<u32>* kmap, const std::vector<Packet>& packets) {
+	std::stringstream ss;
+	ss << "Smap: " << std::endl;
+	for (u32 i = 0; i < input.r; i++) {
+		ss << (i+1) << " => ";
 
-		for (Sorte j : i.second)
-			std::cout << j.i << "(" << j.n << ") ";
-		std::cout << std::endl;
+		for (auto j : smap[i])
+			ss << j.i << "(" << j.n << ") ";
+		ss << std::endl;
 	}
 
-	std::cout << "Kmap: " << std::endl;
-	for (auto i : kmap) {
-		std::cout << i.first << ": ";
+	ss << "Kmap: " << std::endl;
+	for (u32 i = 0; i < input.r; i++) {
+		ss << (i + 1) << ": ";
 
-		for (u32 j : i.second)
-			std::cout << j << " ";
-		std::cout << std::endl;
+		for (u32 j : kmap[i])
+			ss << (j+1) << " ";
+		ss << std::endl;
 	}
+	ss << "Packets: " << std::endl;
+	for (const Packet& p : packets) {
+		ss << "  ("
+			<< (p.a.j + 1) << ' ' << (p.a.i + 1) << ' ' << p.a.n << ") + ("
+			<< (p.b.j + 1) << ' ' << (p.b.i + 1) << ' ' << p.a.n << ") + ("
+			<< (p.c.j + 1) << ' ' << (p.c.i + 1) << ' ' << p.a.n << ')'
+			<< std::endl;
+	}
+	std::cout << ss.str();
 }
