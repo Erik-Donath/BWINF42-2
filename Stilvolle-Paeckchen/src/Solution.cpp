@@ -1,103 +1,144 @@
+#include <unordered_map>
 #include <vector>
+
 #include "Solution.h"
 
 #include <iostream>
 
 template<class Container, class Object>
-inline bool contains(Container container, const Object& value) {
+inline bool contains(Container& container, const Object& value) {
 	return !container.empty() && std::find(container.begin(), container.end(), value) != container.end();
 }
-
-void debugSolution(const Input& input, const std::vector<Thing>* smap, const std::vector<u32>* kmap, const std::vector<Packet>& packets);
-const Output& Solve(const Input& input) {
-	// Sortiert die Sorten in eine Map, so das man die Sorten anhand der Stille einfacher ansprechen kann.
-	std::vector<Thing>* smap = new std::vector<Thing>[input.r];
-	for (Thing thing : input.things) {
-		thing.j -= 1, thing.i -= 1;
-		smap[thing.j].push_back(thing);
-	}
-
-	// Erstellt eine Map, die für ein Still anzeigt, mit welchen anderen Stillen er kombienert werden kann.
-	std::vector<u32>* kmap = new std::vector<u32>[input.r];
-	for (u32 i = 0; i < input.r; i++)
-		kmap[i].push_back(i);
-	for (CPair pair : input.combinations) {
-		kmap[pair.x - 1].push_back(pair.y - 1);
-		kmap[pair.y - 1].push_back(pair.x - 1);
-	}
-
-	std::vector<Packet> packets;
-	for (u32 a = 0; a < input.r; a++) {
-	for (u32 b : kmap[a]) { // Alle Combis von a werden durchgegangen. Das erspart unnötiges checken.
-	for (u32 c : kmap[b]) {
-		if (contains(kmap[a], c)) { // c muss auch mit a kompatible sein!
-			for (Thing d : smap[a]) {
-			for (Thing e : smap[b]) {
-			for (Thing f : smap[c]) {
-				Packet p(Thing(d, 0), Thing(e, 0), Thing(f, 0));
-				if (!contains(packets, p)) {
-					packets.push_back(p);
-				}
-			}}}
-		}
-	}}}
-	
-	for (Thing t : input.things) {
-		t.i -= 1, t.j -= 1;
-		std::vector<Packet> k;
-		for (const Packet& p : packets) {
-			if (p.hasThing(t)) {
-				k.push_back(p);
-			}
-		}
-		std::cout << "For Thing (" << (t.j + 1) << ' ' << (t.i + 1) << "):" << std::endl;
-		if (k.empty()) std::cout << "  Empty" << std::endl;
-		for (const Packet& p : k) {
-			std::cout << "  ("
-					  << (p.a.j + 1) << ' ' << (p.a.i + 1) << ' ' << p.a.n << ") + ("
-					  << (p.b.j + 1) << ' ' << (p.b.i + 1) << ' ' << p.a.n << ") + ("
-					  << (p.c.j + 1) << ' ' << (p.c.i + 1) << ' ' << p.a.n << ')'
-					  << std::endl;
-		}
-
-	}
-
-	debugSolution(input, smap, kmap, packets);
-
-	delete[] smap;
-	delete[] kmap;
-
-	return Output(packets);
+template<class Container, class Object>
+inline u32 getIndex(Container& container, const Object& value) { // If not in container it will be the lenght of the container. [2, 3] search for 1 => 3
+	return std::distance(container.begin(), std::find(container.begin(), container.end(), value));
+}
+template<class Container, class Object>
+inline Object* getElement(Container& container, const Object& value) {
+	u32 index = getIndex(container, value);
+	if (index == container.end() - container.begin()) return nullptr;
+	return &container[index];
 }
 
-//#include <iostream>
-#include <sstream>
-void debugSolution(const Input& input, const std::vector<Thing>* smap, const std::vector<u32>* kmap, const std::vector<Packet>& packets) {
-	std::stringstream ss;
-	ss << "Smap: " << std::endl;
-	for (u32 i = 0; i < input.r; i++) {
-		ss << (i+1) << " => ";
+inline u32 minimum(u32 a, u32 b) {
+	return (a < b) ? a : b;
+}
+inline u32 minimum(u32 a, u32 b, u32 c) {
+	return minimum(minimum(a, c), minimum(b, c));
+}
+static void addThing(std::vector<Thing>& rest, Thing& thing, u32 n) {
+	Thing* t = getElement(rest, thing);
+	if(t == nullptr) {
+		Thing t(thing);
+		t.n = n;
+		rest.push_back(t);
+	}
+	else {
+		t->n += n;
+	}
+}
 
-		for (auto j : smap[i])
-			ss << j.i << "(" << j.n << ") ";
-		ss << std::endl;
+static const std::vector<Combination>* generateCombinations(const std::vector<Pair>& pairs, u32 r) {
+	std::unordered_map<u32, std::vector<u32>> pmap;
+
+	for (int i = 1; i <= r; i++) pmap[i].push_back(i);
+	for (const Pair& pair : pairs) {
+		pmap[pair.x].push_back(pair.y);
+		pmap[pair.y].push_back(pair.x);
 	}
 
-	ss << "Kmap: " << std::endl;
-	for (u32 i = 0; i < input.r; i++) {
-		ss << (i + 1) << ": ";
-
-		for (u32 j : kmap[i])
-			ss << (j+1) << " ";
-		ss << std::endl;
+	std::vector<Combination>* combinations = new std::vector<Combination>;
+	for (auto& kv : pmap) {
+		u32 i = kv.first;
+		std::vector<u32>& a = kv.second;
+		for (u32 j : a) {
+			std::vector<u32>& b = pmap[j];
+			for (u32 k : b) {
+				Combination c = Combination(i, j, k);
+				if (contains(a, k) && !contains(*combinations, c)) {
+					combinations->push_back(c);
+				}
+			}
+		}
 	}
-	ss << "Packets: " << std::endl;
+	return combinations;
+}
+
+
+const Solution Solve(const std::vector<Pair>& pairs, const std::vector<Thing>& things, u32 s, u32 r) {
+	std::vector<Packet>* packets = new std::vector<Packet>;
+	std::vector<Thing>* rest = new std::vector<Thing>;
+
+	std::unordered_map<u32, std::vector<Thing>> smap;
+	std::unordered_map<Thing*, std::vector<u32>> cmap;
+
+	for (const Thing& thing : things)
+		smap[thing.j].push_back(thing);
+
+	const std::vector<Combination>* combinations = generateCombinations(pairs, r);
+	for (const Combination& c : *combinations) {
+		for (Thing& a : smap[c.a]) {
+			for ( Thing& b : smap[c.b]) {
+				for (Thing& c : smap[c.c]) {
+					if (a == b || a == c || b == c) continue;
+					if (a.i == b.i || a.i == c.i || b.i == c.i) continue;
+					
+					Packet p = Packet(a, b, c);
+					if (contains(*packets, p)) continue;
+
+					u32 index = packets->size();
+					packets->push_back(p);
+
+					if (!contains(cmap[&a], index)) cmap[&a].push_back(index);
+					if (!contains(cmap[&b], index)) cmap[&b].push_back(index);
+					if (!contains(cmap[&c], index)) cmap[&c].push_back(index);
+				}
+			}
+		}
+	}
+
+	for (auto& kv : cmap) {
+		Thing t = *kv.first;
+		std::vector<u32> packetIndexes = kv.second;
+
+		Thing rt = Thing(t);
+		u32 n = t.n / packetIndexes.size();
+		rt.n = t.n % packetIndexes.size();
+
+		for (u32 index : packetIndexes) {
+			Packet& p = (*packets)[index];
+			p.SetThingCount(t, n);
+		}
+		if(rt.n > 0)
+			rest->push_back(rt);
+	}
+
+	for (Packet& p : *packets) {
+		u32 m = minimum(p.a.n, p.b.n, p.c.n);
+		u32 ar = p.a.n - m, br = p.b.n - m, cr = p.c.n;
+		p.n = p.a.n = p.b.n = p.c.n = m;
+
+		if (ar > 0) addThing(*rest, p.a, ar);
+		if (br > 0) addThing(*rest, p.b, br);
+		if (cr > 0) addThing(*rest, p.c, cr);
+	}
+
+	// Debug Code
+	/*
+	for (const Combination& c : *combinations) {
+		std::cout << "  (" << c.a << " + " << c.b << " + " << c.c << ")" << std::endl;
+	}
 	for (const Packet& p : packets) {
-		ss << "  ("
-			<< (p.a.j + 1) << ' ' << (p.a.i + 1) << ' ' << p.a.n << ") + ("
-			<< (p.b.j + 1) << ' ' << (p.b.i + 1) << ' ' << p.a.n << ") + ("
-			<< (p.c.j + 1) << ' ' << (p.c.i + 1) << ' ' << p.a.n << ')'
+		std::cout << "  ("
+			<< p.a.j << ' ' << p.a.i << ' ' << p.a.n << ") + ("
+			<< p.b.j << ' ' << p.b.i << ' ' << p.b.n << ") + ("
+			<< p.c.j << ' ' << p.c.i << ' ' << p.c.n << ')'
 			<< std::endl;
 	}
-	std::cout << ss.str();
+	for (const Thing& t : rest) {
+		std::cout << "  (" << t.j << ' ' << t.i << ' ' << t.n << ")" << std::endl;
+	}*/
+	
+	delete combinations;
+	return Solution(packets, rest);
 }
