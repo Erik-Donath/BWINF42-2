@@ -20,10 +20,10 @@ inline Object* getElement(Container& container, const Object& value) {
 	return &container[index];
 }
 
-inline u32 minimum(u32 a, u32 b) {
+static inline u32 minimum(u32 a, u32 b) {
 	return (a < b) ? a : b;
 }
-inline u32 minimum(u32 a, u32 b, u32 c) {
+static inline u32 minimum(u32 a, u32 b, u32 c) {
 	return minimum(minimum(a, c), minimum(b, c));
 }
 static void addThing(std::vector<Thing>& rest, Thing& thing, u32 n) {

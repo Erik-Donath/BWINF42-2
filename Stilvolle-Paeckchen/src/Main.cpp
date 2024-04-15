@@ -102,10 +102,10 @@ i32 main(i32 argc, char* argv[]) {
 
     std::cout << std::endl << "Packete: " << std::endl;
     for (const Packet& p : *solution.packets) {
-        std::cout << "  " << p.n << " * ("
+        std::cout << "  " << p.n << " * {("
             << p.a.j << ' ' << p.a.i << ") + ("
             << p.b.j << ' ' << p.b.i << ") + ("
-            << p.c.j << ' ' << p.c.i << ')'
+            << p.c.j << ' ' << p.c.i << ")}"
             << std::endl;
     }
 
