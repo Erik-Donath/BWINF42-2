@@ -1,0 +1,24 @@
+Die Datei, die als Parameter übergeben wurde, wird verwendet!
+
+Sorten Anzahl: 3
+Still Anzahl:  2
+
+Kombinationen: 
+  1 <> 2
+
+Dinge: 
+  1 + 1 => 3
+  1 + 2 => 2
+  2 + 2 => 3
+  3 + 2 => 3
+Funktion took 9100 nanoseconds (0 miliseconds).
+
+Packete: 
+  1 * {(1 1) + (2 2) + (2 3)}
+  1 * {(2 1) + (2 2) + (2 3)}
+
+Rest: 
+  1 * (2 2)
+  3 * (3 2)
+  2 * (1 1)
+  1 * (1 2)

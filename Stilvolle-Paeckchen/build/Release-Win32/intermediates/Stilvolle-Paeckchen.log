@@ -1,9 +1,0 @@
-﻿  Main.cpp
-  Solution.cpp
-  Generating code
-E:\dev\BWINF42-2\Stilvolle-Paeckchen\src\Solution.cpp(69): warning C4172: returning address of local variable or temporary
-  3 of 518 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  Stilvolle-Paeckchen.vcxproj -> E:\dev\BWINF42-2\Stilvolle-Paeckchen\build\Release-Win32\Stilvolle-Paeckchen.exe
